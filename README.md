@@ -1,37 +1,31 @@
-## Welcome to GitHub Pages
+# inflightsnack.github.io
 
-You can use the [editor on GitHub](https://github.com/inflightsnack/inflightsnack.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This project is scaffolded to run client-side React components directly in the browser (no build step required).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Structure
 
-### Markdown
+- `index.html` mounts the React app
+- `src/main.js` bootstraps React
+- `src/App.js` contains the main component
+- `src/styles.css` contains page styles
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Run locally
 
-```markdown
-Syntax highlighted code block
+Serve this folder with any static file server.
 
-# Header 1
-## Header 2
-### Header 3
+Examples:
 
-- Bulleted
-- List
+- Python: `python3 -m http.server 8080`
+- VS Code Live Server extension
 
-1. Numbered
-2. List
+Then open `http://localhost:8080`.
 
-**Bold** and _Italic_ and `Code` text
+## Edit React components
 
-[Link](url) and ![Image](src)
-```
+Update `src/App.js` and add more component modules under `src/`.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+Because this scaffold avoids a bundler, components currently use `React.createElement` instead of JSX.
 
-### Jekyll Themes
+## Optional: migrate to Vite later
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/inflightsnack/inflightsnack.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+When Node.js/npm is installed, you can migrate to a Vite + JSX workflow for a better developer experience.
