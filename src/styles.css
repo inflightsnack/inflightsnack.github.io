@@ -30,3 +30,10 @@ h1 {
   background: #ffffff;
   border: 1px solid #dce2eb;
 }
+
+.countdown {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+  font-family: monospace;
+}

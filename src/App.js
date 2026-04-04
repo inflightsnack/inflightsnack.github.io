@@ -17,7 +17,7 @@ export default function App() {
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    return `${days}d ${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
   };
 
 
@@ -33,7 +33,7 @@ export default function App() {
     React.createElement(
       "section",
       { className: "card" },
-      React.createElement("h2", null, `${formatTimeLeft(timeLeft)}`),
+      React.createElement("p", { className: "countdown" }, `${formatTimeLeft(timeLeft)}`),
       React.createElement("p", null, "until 5:00 PM on June 30, 2026.")
     )
   );
