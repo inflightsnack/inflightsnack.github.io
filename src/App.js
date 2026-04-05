@@ -29,7 +29,7 @@ export default function App() {
       "section",
       { className: "card" },
       React.createElement("p", { className: "countdown" }, formatTimeLeft(timeLeft)),
-      React.createElement("p", null, "until 5:00 PM on June 30, 2026.")
+      React.createElement("p", null, "until 5:00 PM on 30 June 2026.")
     )
   );
 }
