@@ -26,11 +26,6 @@ export default function App() {
     { className: "page" },
     React.createElement("h1", null, "inflightsnack Home Page"),
     React.createElement(
-      "p",
-      null,
-      "React is running client-side in this GitHub Pages project."
-    ),
-    React.createElement(
       "section",
       { className: "card" },
       React.createElement("p", { className: "countdown" }, formatTimeLeft(timeLeft)),
