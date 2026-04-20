@@ -1,4 +1,15 @@
+# Jekyll
 _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+
+# Node
+node_modules/
+
+# Vite
+dist/
+.vite/
+
+# Misc
+.DS_Store
