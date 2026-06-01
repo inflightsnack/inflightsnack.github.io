@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-
 import { Temporal } from '@js-temporal/polyfill'
 
 const target = Temporal.ZonedDateTime.from({
@@ -11,14 +10,15 @@ const target = Temporal.ZonedDateTime.from({
   minute: 30,
   second: 0,
 });
+const targetLocal = target.withTimeZone(Temporal.Now.timeZoneId())
 
 export default function App() {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(target, Temporal.Now.zonedDateTimeISO(target.timeZone)))
-  const [workTime, setWorkTime] = useState(calculateWorkTime(target, Temporal.Now.zonedDateTimeISO(target.timeZone)))
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(target, Temporal.Now.zonedDateTimeISO(target.timeZoneId)))
+  const [workTime, setWorkTime] = useState(calculateWorkTime(target, Temporal.Now.zonedDateTimeISO(target.timeZoneId)))
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = Temporal.Now.zonedDateTimeISO(target.timeZone)
+      const now = Temporal.Now.zonedDateTimeISO(target.timeZoneId)
       setTimeLeft(calculateTimeLeft(target, now))
       setWorkTime(calculateWorkTime(target, now))
     }, 1000)
@@ -31,12 +31,12 @@ export default function App() {
       <section className="card">
         <p>Total time remaining</p>
         <p className="countdown">{formatTimeLeft(timeLeft)}</p>
-        <p>until {formatTargetTime(target)} on {formatTargetDate(target)}.</p>
+        <p>until {formatTargetTime(targetLocal)} on {formatTargetDate(targetLocal)}.</p>
       </section>
       <section className="card">
         <p>Work time remaining</p>
         <p className="countdown">{formatTimeLeft(workTime)}</p>
-        <p>until {formatTargetTime(target)} on {formatTargetDate(target)}.</p>
+        <p>until {formatTargetTime(targetLocal)} on {formatTargetDate(targetLocal)}.</p>
       </section>
     </main>
   )
@@ -75,21 +75,18 @@ function calculateTimeLeft(targetZonedDateTime, currentZonedDateTime) {
 }
 
 function calculateWorkTime(targetZonedDateTime, currentZonedDateTime) {
+  if (Temporal.ZonedDateTime.compare(currentZonedDateTime, targetZonedDateTime) >= 0) {
+    return Temporal.Duration.from({days: 0})
+  }
+
   const holidays = new Set(['2026-06-12', '2026-06-29', '2026-06-30'])
   function isWorkDay(date) {
     const isHoliday = holidays.has(date.toString())
     const isWeekend = date.dayOfWeek === 6 || date.dayOfWeek === 7
     return !isHoliday && !isWeekend
   }
-  if (Temporal.ZonedDateTime.compare(currentZonedDateTime, targetZonedDateTime) >= 0) {
-    return Temporal.Duration.from({days: 0})
-  }
   // count the days after today, filtering out holidays and weekends
   let _workTime = Temporal.Duration.from({days: 0})
-  const dayStart = Temporal.PlainTime.from('09:00:00')
-  const dayEnd = Temporal.PlainTime.from('17:30:00')
-  const lunchStart = Temporal.PlainTime.from('12:00:00')
-  const lunchEnd = Temporal.PlainTime.from('13:00:00')
   const currentDate = currentZonedDateTime.toPlainDate()
   const targetDate = targetZonedDateTime.toPlainDate()
 
@@ -98,12 +95,17 @@ function calculateWorkTime(targetZonedDateTime, currentZonedDateTime) {
       _workTime = _workTime.add(Temporal.Duration.from({ days: 1 }))
     }
   }
+
   // calculate the work time left in the current day if today is a work day
   if (!isWorkDay(currentDate)) {
     return _workTime
   } 
-  const currentTime = currentZonedDateTime.toPlainTime()
 
+  const dayStart = Temporal.PlainTime.from('09:00:00')
+  const dayEnd = Temporal.PlainTime.from('17:30:00')
+  const lunchStart = Temporal.PlainTime.from('12:00:00')
+  const lunchEnd = Temporal.PlainTime.from('13:00:00')
+  const currentTime = currentZonedDateTime.toPlainTime()
   const lunchDuration = lunchStart.until(lunchEnd, { largestUnit: 'hours' })
 
   if (Temporal.PlainTime.compare(currentTime, dayStart) < 0) {
