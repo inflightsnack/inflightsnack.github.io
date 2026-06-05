@@ -79,7 +79,7 @@ function calculateWorkTime(targetZonedDateTime, currentZonedDateTime) {
     return Temporal.Duration.from({days: 0})
   }
 
-  const holidays = new Set(['2026-06-12', '2026-06-29', '2026-06-30'])
+  const holidays = new Set(['2026-06-11', '2026-06-12', '2026-06-29', '2026-06-30'])
   function isWorkDay(date) {
     const isHoliday = holidays.has(date.toString())
     const isWeekend = date.dayOfWeek === 6 || date.dayOfWeek === 7
