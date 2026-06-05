@@ -1,31 +1,73 @@
 # inflightsnack.github.io
 
-This project is scaffolded to run client-side React components directly in the browser (no build step required).
+This project has been migrated from a no-build React setup to a Vite + React workflow.
 
-## Structure
+## Migration summary
 
-- `index.html` mounts the React app
-- `src/main.js` bootstraps React
-- `src/App.js` contains the main component
-- `src/styles.css` contains page styles
+The app previously ran React directly in the browser with no bundler and manual static serving. It now uses Vite for local development and production builds.
 
-## Run locally
+### What changed
 
-Serve this folder with any static file server.
+- Added a Node-based toolchain with `vite` and `@vitejs/plugin-react`.
+- Switched to JSX entry/component files:
+	- `src/main.js` -> `src/main.jsx`
+	- `src/App.js` -> `src/App.jsx`
+- Updated `index.html` to load Vite's module entry (`/src/main.jsx`).
+- Added npm scripts for development, build, and preview.
+- Production output is now generated in `dist/`.
 
-Examples:
+## Project structure
 
-- Python: `python3 -m http.server 8080`
-- VS Code Live Server extension
+- `index.html`: app shell and root mount node
+- `src/main.jsx`: React bootstrap
+- `src/App.jsx`: main app component
+- `src/styles.css`: styles
+- `vite.config.js`: Vite config with React plugin
+- `package.json`: dependencies and scripts
 
-Then open `http://localhost:8080`.
+## Local setup
 
-## Edit React components
+### Requirements
 
-Update `src/App.js` and add more component modules under `src/`.
+- Node.js 18+ (recommended: current LTS)
+- npm (bundled with Node.js)
 
-Because this scaffold avoids a bundler, components currently use `React.createElement` instead of JSX.
+### Install dependencies
 
-## Optional: migrate to Vite later
+```bash
+npm install
+```
 
-When Node.js/npm is installed, you can migrate to a Vite + JSX workflow for a better developer experience.
+### Start development server
+
+```bash
+npm run dev
+```
+
+Vite will print a local URL (typically `http://localhost:5173`).
+
+## Build process
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+This runs `vite build` and outputs optimized static assets to `dist/`.
+
+The build is currently verified and succeeds in this repository.
+
+## Preview production build locally
+
+After building:
+
+```bash
+npm run preview
+```
+
+This serves the `dist/` output so you can validate production behavior before deployment.
+
+## Deployment note
+
+Deploy the generated contents of `dist/` to your static hosting target (for example, GitHub Pages publishing from a build artifact).
