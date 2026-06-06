@@ -38,6 +38,12 @@ The app previously ran React directly in the browser with no bundler and manual 
 npm install
 ```
 
+Also run this to install the dev dependencies:
+
+```bash
+npm install --include=dev
+```
+
 ### Start development server
 
 ```bash
