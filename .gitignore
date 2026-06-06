@@ -8,7 +8,7 @@ _site/
 node_modules/
 
 # Vite
-dist/
+# dist/ publish the build to the release branch
 .vite/
 
 # Misc
