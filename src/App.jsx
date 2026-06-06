@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Temporal } from '@js-temporal/polyfill'
 
+const startDate = Temporal.ZonedDateTime.from({
+  timeZone: "Europe/London",
+  year: 2003,
+  month: 12,
+  day: 15,
+  hour: 9,
+  minute: 0,
+  second: 0,
+})
+
 const target = Temporal.ZonedDateTime.from({
   timeZone: "Europe/London",
   year: 2026,
@@ -13,14 +23,18 @@ const target = Temporal.ZonedDateTime.from({
 const targetLocal = target.withTimeZone(Temporal.Now.timeZoneId())
 
 export default function App() {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(target, Temporal.Now.zonedDateTimeISO(target.timeZoneId)))
-  const [workTime, setWorkTime] = useState(calculateWorkTime(target, Temporal.Now.zonedDateTimeISO(target.timeZoneId)))
+  const now = Temporal.Now.zonedDateTimeISO(target.timeZoneId)
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(target, now))
+  const [workTime, setWorkTime] = useState(calculateWorkTime(target, now))
+  const [progress, setProgress] = useState(calculateTimelineProgress(startDate, target, now))
+  const progressLabel = formatProgressPercent(progress)
 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Temporal.Now.zonedDateTimeISO(target.timeZoneId)
       setTimeLeft(calculateTimeLeft(target, now))
       setWorkTime(calculateWorkTime(target, now))
+      setProgress(calculateTimelineProgress(startDate, target, now))
     }, 1000)
     return () => clearInterval(interval)
   }, [])
@@ -32,6 +46,15 @@ export default function App() {
         <p>Total time remaining</p>
         <p className="countdown">{formatTimeLeft(timeLeft)}</p>
         <p>until {formatTargetTime(targetLocal)} on {formatTargetDate(targetLocal)}.</p>
+        <div className="progress-block" aria-label="Time elapsed from start date to target">
+          <div className="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progress} aria-valuetext={`${progressLabel} percent elapsed`}>
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="progress-meta">
+            <span>Employment progress</span>
+            <span>{progressLabel}%</span>
+          </div>
+        </div>
       </section>
       <section className="card">
         <p>Work time remaining</p>
@@ -119,5 +142,22 @@ function calculateWorkTime(targetZonedDateTime, currentZonedDateTime) {
   }
 
   return _workTime
+}
+
+function calculateTimelineProgress(startZonedDateTime, targetZonedDateTime, currentZonedDateTime) {
+  const totalDuration = targetZonedDateTime.epochMilliseconds - startZonedDateTime.epochMilliseconds
+
+  if (totalDuration <= 0) {
+    return 100
+  }
+
+  const elapsedDuration = currentZonedDateTime.epochMilliseconds - startZonedDateTime.epochMilliseconds
+  const clampedElapsed = Math.min(Math.max(elapsedDuration, 0), totalDuration)
+
+  return (clampedElapsed / totalDuration) * 100
+}
+
+function formatProgressPercent(progress) {
+  return progress.toFixed(1)
 }
 
